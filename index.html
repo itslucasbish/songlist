@@ -53,7 +53,7 @@
         .theme-toggle { position: absolute; top: 20px; right: 20px; z-index: 10; background: var(--c); border: 2px solid var(--b); color: var(--t); width: 44px; height: 44px; border-radius: 12px; cursor: pointer; font-size: 20px; display: flex; align-items: center; justify-content: center; transition: var(--tr); box-shadow: var(--sh); }
         .theme-toggle:hover, .btn-reset:hover { background: var(--p); color: #fff; border-color: var(--p); transform: translateY(-2px); }
 
-        /* Abas (Tabs) - Recomendações na esquerda */
+        /* Abas (Tabs) */
         .tabs { display: flex; gap: 10px; margin-bottom: 20px; border-bottom: 2px solid var(--b); padding-bottom: 10px; }
         .tab-btn { background: none; border: none; font-size: 18px; font-weight: bold; color: var(--m); cursor: pointer; padding: 10px 20px; transition: var(--tr); border-radius: 8px; }
         .tab-btn:hover { background: rgba(102,126,234,0.1); color: var(--p); }
@@ -107,16 +107,14 @@
         .btn-preview { width: 100%; padding: 10px; background: linear-gradient(135deg,var(--p),var(--s)); color: #fff; border: none; border-radius: 10px; font-size: 12px; font-weight: 700; cursor: pointer; transition: var(--tr); margin-top: auto; text-transform: uppercase; letter-spacing: .5px; }
         .btn-preview:hover { transform: scale(1.03); box-shadow: 0 6px 20px rgba(102,126,234,.4); }
         
-        /* Modal & Vídeo Otimizado com GPU Glow */
+        /* Modal & Vídeo */
         .modal { display: none; position: fixed; inset: 0; background: rgba(0,0,0,.85); z-index: 1000; align-items: center; justify-content: center; padding: 20px; backdrop-filter: blur(5px); animation: A .3s ease-out; }
         .modal.active { display: flex; }
-        
-        .modal-wrapper { position: relative; width: 100%; max-width: 900px; max-height: 90vh; }
-        
-        /* O Glow GPU-Accelerated fica atrás do conteúdo do modal */
-        .modal-glow { position: absolute; inset: 0; border-radius: 16px; box-shadow: 0 0 90px var(--music-color); opacity: 0; pointer-events: none; will-change: opacity; z-index: -1; }
-        
-        .modal-content { background: var(--c); border-radius: 16px; width: 100%; position: relative; color: var(--t); box-shadow: 0 0 10px rgba(0,0,0,0.5); overflow: hidden; display: flex; flex-direction: column; max-height: 90vh; }
+        .modal-content { 
+            background: var(--c); border-radius: 16px; max-width: 900px; width: 100%; position: relative; color: var(--t); 
+            box-shadow: 0 0 10px rgba(0,0,0,0.5); overflow: hidden; display: flex; flex-direction: column; max-height: 90vh;
+            transition: box-shadow 0.05s linear; 
+        }
 
         .modal-header { padding: 20px; border-bottom: 1px solid var(--b); display: flex; justify-content: space-between; align-items: flex-start; }
         .modal-header-info { display: flex; flex-direction: column; gap: 8px; width: 100%; }
@@ -132,16 +130,22 @@
         .modal-close:hover { transform: rotate(90deg) scale(1.1); }
         .modal-body { padding: 20px; overflow-y: auto; flex: 1; display: flex; flex-direction: column; align-items: center; }
         
-        /* Container do vídeo com bordas arredondadas e controles nativos */
-        .video-container { position: relative; width: 100%; max-width: 800px; background: #000; display: flex; align-items: center; justify-content: center; border-radius: 16px; overflow: hidden; }
-        #modalVideoPlayer { width: 100%; height: auto; max-height: 50vh; display: block; }
+        .video-container { 
+            position: relative; width: 100%; max-width: 800px; background: #000; 
+            overflow: hidden; display: flex; align-items: center; justify-content: center; 
+            border-radius: 20px; 
+        }
+        #modalVideoPlayer { 
+            width: 100%; height: auto; max-height: 50vh; display: block; 
+            border-radius: 20px; 
+        }
+
         #modalAudioPlayer { display: none; }
         .buffer-loading { position: absolute; font-size: 14px; font-weight: 600; color: white; background: rgba(0,0,0,0.8); padding: 10px 20px; border-radius: 8px; z-index: 10; display: none; text-transform: uppercase; letter-spacing: 1px; }
 
         .empty-state { grid-column: 1/-1; padding: 60px 20px; text-align: center; color: var(--m); }
         @keyframes A { from { opacity: 0; transform: translateY(10px); } to { opacity: 1; transform: none; } }
         
-        /* Mobile adjustments */
         @media(max-width:768px){ 
             .header { padding: 30px 15px; } 
             .header h1 { font-size: 28px; } 
@@ -173,13 +177,11 @@
                 </div>
             </header>
 
-            <!-- Abas com a nova ordem -->
             <div class="tabs">
                 <button class="tab-btn active" id="tabTrending" onclick="switchTab('trending')">🔥 Recomendações</button>
                 <button class="tab-btn" id="tabLibrary" onclick="switchTab('library')">📚 Biblioteca</button>
             </div>
 
-            <!-- Controles de Relevância -->
             <div id="weightControls" class="dashboard-controls">
                 <div class="slider-group">
                     <div class="slider-header"><span class="sp-label">Peso Spotify</span><span id="valSp" class="weight-badge">1</span></div>
@@ -210,32 +212,29 @@
         </div>
     </div>
 
-    <!-- Modal Player Otimizado -->
+    <!-- Modal Player -->
     <div class="modal" id="videoModal">
-        <div class="modal-wrapper">
-            <div class="modal-glow" id="modalGlow"></div>
-            <div class="modal-content">
-                <div class="modal-header">
-                    <div class="modal-header-info">
-                        <div class="modal-title" id="modalTitle"></div>
-                        <div class="modal-artist" id="modalArtist"></div>
-                        <div class="music-tags" id="modalTags" style="margin-top: 5px;"></div>
-                        
-                        <div class="modal-controls-row">
-                            <div class="pulse-control">
-                                <label for="modalBpmInput">BPM (Editável):</label>
-                                <input type="number" id="modalBpmInput" min="40" max="300" title="Ajuste para testar a sincronia">
-                            </div>
+        <div class="modal-content" id="modalContentBox">
+            <div class="modal-header">
+                <div class="modal-header-info">
+                    <div class="modal-title" id="modalTitle"></div>
+                    <div class="modal-artist" id="modalArtist"></div>
+                    
+                    <div class="music-tags" id="modalTags" style="margin-top: 5px;"></div>
+                    
+                    <div class="modal-controls-row">
+                        <div class="pulse-control">
+                            <label for="modalBpmInput">BPM (Editável):</label>
+                            <input type="number" id="modalBpmInput" min="40" max="300" title="Ajuste para testar a sincronia">
                         </div>
                     </div>
-                    <button class="modal-close" onclick="closeModal()">✕</button>
                 </div>
-                <div class="modal-body">
-                    <div class="video-container" id="vidContainer">
-                        <div id="bufferLoading" class="buffer-loading">Sincronizando...</div>
-                        <!-- Player com HUD nativo do navegador -->
-                        <video id="modalVideoPlayer" controls preload="auto"></video>
-                    </div>
+                <button class="modal-close" onclick="closeModal()">✕</button>
+            </div>
+            <div class="modal-body">
+                <div class="video-container" id="vidContainer">
+                    <div id="bufferLoading" class="buffer-loading">Sincronizando...</div>
+                    <video id="modalVideoPlayer" controls preload="auto"></video>
                 </div>
             </div>
         </div>
@@ -245,13 +244,15 @@
     <script>
         let db = [], filtered = [], currentMode = 'trending';
         let limit = 20;
-        const modalState = { activeId: null, animationFrameId: null, bufferIntervalId: null, isReadyToPlay: false, hasLoadedSrc: false };
+        const modalState = { activeId: null, animationFrameId: null, bufferIntervalId: null, isReadyToPlay: false };
         const $ = id => document.getElementById(id);
 
+        // ======== CARREGAMENTO AUTOMÁTICO (LAZY FETCH) ========
         document.addEventListener('DOMContentLoaded', () => {
             fetch('songs.json')
                 .then(res => res.json())
                 .then(data => {
+                    // Transforma o dicionário (key=UUID) em array novamente para a grid
                     db = Object.keys(data).map((uuid, idx) => {
                         const m = data[uuid];
                         return {
@@ -269,7 +270,8 @@
                     initApp();
                 })
                 .catch(err => {
-                    $('loadingSection').innerHTML = "<h2>Erro ao carregar o catálogo.</h2><p>Certifique-se de estar rodando em um servidor local.</p>";
+                    console.error("Erro ao carregar songs.json:", err);
+                    $('loadingSection').innerHTML = "<h2>Erro ao carregar o catálogo.</h2><p>Certifique-se de que 'songs.json' está na mesma pasta e você está rodando um servidor local.</p>";
                 });
         });
 
@@ -291,8 +293,10 @@
         }
 
         function calculatePositionalRanks() {
-            [...db].sort((a,b) => (b.spotify_streams || 0) - (a.spotify_streams || 0)).forEach((m,i) => m.rank_sp = i + 1);
-            [...db].sort((a,b) => (b.youtube_views || 0) - (a.youtube_views || 0)).forEach((m,i) => m.rank_yt = i + 1);
+            [...db].sort((a,b) => (b.spotify_streams || 0) - (a.spotify_streams || 0))
+                .forEach((m,i) => m.rank_sp = i + 1);
+            [...db].sort((a,b) => (b.youtube_views || 0) - (a.youtube_views || 0))
+                .forEach((m,i) => m.rank_yt = i + 1);
             updateRanks();
         }
 
@@ -355,6 +359,7 @@
                 const rankBadge = currentMode === 'trending' ? `<span class="badge badge-rank">Score: ${m.score}</span>` : '';
                 const btn = (m.video_url && m.audio_url) ? `<button class="btn-preview" onclick="openM('${m._tempId}')">▶ Prévia</button>` : '';
 
+                // Link do GitHub Raw
                 const coverUrl = `https://raw.githubusercontent.com/itslucasbish/songlist/main/covers/${m.uuid}.webp`;
 
                 return `<div class="music-card" style="border-bottom:4px solid ${m.color}">
@@ -387,18 +392,16 @@
             });
         }, { passive: true });
 
-        // ======== MODAL & PULSO DECAY OTIMIZADO ========
-        const vp = $('modalVideoPlayer'), ap = $('modalAudioPlayer'), bl = $('bufferLoading'), mGlow = $('modalGlow');
+        // ======== MODAL & PULSO DECAY ========
+        const vp = $('modalVideoPlayer'), ap = $('modalAudioPlayer'), bl = $('bufferLoading'), modalBox = $('modalContentBox');
         
         function openM(tempId) {
             const m = db.find(x => x._tempId == tempId);
             if (!m) return;
-            
-            const isSameSong = modalState.activeId == tempId;
             modalState.activeId = tempId;
 
             $('modalTitle').innerText = m.nome;
-            $('modalArtist').innerText = m.artista; // Sem o "por"
+            $('modalArtist').innerText = m.artista;
             
             const tagsHTML = [...m.genreList, ...m.decadeList].map(t => `<span class="music-tag">${t}</span>`).join('');
             $('modalTags').innerHTML = `<span class="music-tag">👤 ${m.playersStr}</span><span class="music-tag">${m.gameStr}</span>${tagsHTML}`;
@@ -407,99 +410,76 @@
             $('modalBpmInput').value = m.bpm;
             
             $('videoModal').classList.add('active');
+            vp.src = m.video_url; ap.src = m.audio_url; 
+            vp.pause(); ap.pause();
+            
+            bl.style.display = 'block';
+            bl.textContent = 'Preparando sincronia...';
+            modalState.isReadyToPlay = false;
 
-            // Evita download repetido se for a mesma música
-            if (!isSameSong || !modalState.hasLoadedSrc) {
-                vp.src = m.video_url; ap.src = m.audio_url; 
-                vp.load(); ap.load();
-                modalState.hasLoadedSrc = true;
+            clearInterval(modalState.bufferIntervalId);
+            modalState.bufferIntervalId = setInterval(() => {
+                if (modalState.isReadyToPlay) return;
+                const vReady = vp.readyState >= 3, aReady = ap.readyState >= 3;
+                const getBufferPct = media => (media.duration > 0 && media.buffered.length > 0) ? (media.buffered.end(media.buffered.length - 1) / media.duration) : 0;
                 
-                bl.style.display = 'block';
-                bl.textContent = 'Preparando sincronia...';
-                modalState.isReadyToPlay = false;
+                const vBuf = getBufferPct(vp), aBuf = getBufferPct(ap);
+                bl.textContent = `Preparando sincronia (${Math.floor(Math.min(vBuf, aBuf) * 100)}%)...`;
 
-                clearInterval(modalState.bufferIntervalId);
-                modalState.bufferIntervalId = setInterval(() => {
-                    if (modalState.isReadyToPlay) return;
-                    const vReady = vp.readyState >= 3, aReady = ap.readyState >= 3;
-                    const getBufferPct = media => (media.duration > 0 && media.buffered.length > 0) ? (media.buffered.end(media.buffered.length - 1) / media.duration) : 0;
-                    
-                    const vBuf = getBufferPct(vp), aBuf = getBufferPct(ap);
-                    bl.textContent = `Sincronizando (${Math.floor(Math.min(vBuf, aBuf) * 100)}%)...`;
-
-                    if ((vReady && aReady) || (vBuf >= 0.3 && aBuf >= 0.3)) {
-                        modalState.isReadyToPlay = true;
-                        clearInterval(modalState.bufferIntervalId);
-                        bl.style.display = 'none';
-                        vp.play().catch(()=>{}); ap.play().catch(()=>{});
-                        startPulse();
-                    }
-                }, 300);
-            } else {
-                // Já estava em cache/buffer da música atual
-                vp.currentTime = 0; ap.currentTime = 0;
-                bl.style.display = 'none';
-                vp.play().catch(()=>{}); ap.play().catch(()=>{});
-                startPulse();
-            }
+                if ((vReady && aReady) || (vBuf >= 0.3 && aBuf >= 0.3)) {
+                    modalState.isReadyToPlay = true;
+                    clearInterval(modalState.bufferIntervalId);
+                    bl.style.display = 'none';
+                    vp.play().catch(()=>{}); ap.play().catch(()=>{});
+                    startPulse();
+                }
+            }, 300);
         }
 
         function startPulse() {
-            cancelAnimationFrame(modalState.animationFrameId);
-            
             function loop() {
-                if (!vp.paused && !vp.waiting) {
+                if (!vp.paused) {
                     const bpm = parseFloat($('modalBpmInput').value) || 120;
                     const beatDur = 60 / bpm;
-                    
-                    // Usa o relógio do áudio, que é o mestre do tempo
-                    let t = ap.currentTime;
-                    const dur = ap.duration || 30;
+                    const t = vp.currentTime;
+                    const dur = vp.duration || 30;
 
-                    // Condição: Pula a primeira e a última batida
+                    // Pula primeira e última batida
                     const isFirstBeat = t < beatDur;
                     const isLastBeat = t > (dur - beatDur);
                     
                     if (isFirstBeat || isLastBeat) {
-                        mGlow.style.opacity = 0;
+                        modalBox.style.boxShadow = `0 0 10px rgba(0,0,0,0.5)`;
                     } else {
-                        // Força a fase matemática lidar com arredondamentos
                         const phase = (t % beatDur) / beatDur;
-                        const intensity = Math.exp(-6 * phase); // Decay puro
-                        
-                        mGlow.style.opacity = intensity.toFixed(3);
+                        const intensity = Math.exp(-6 * phase);
+                        const shadowSize = 10 + (80 * intensity);
+                        modalBox.style.boxShadow = `0 0 ${shadowSize}px var(--music-color)`;
                     }
                 } else {
-                    mGlow.style.opacity = 0;
+                    modalBox.style.boxShadow = `0 0 10px rgba(0,0,0,0.5)`;
                 }
                 modalState.animationFrameId = requestAnimationFrame(loop);
             }
             loop();
         }
 
-        // Sincronia Áudio e Vídeo (Audio Master)
-        vp.onended = () => { ap.pause(); ap.currentTime = 0; mGlow.style.opacity = 0; };
-        vp.onpause = () => { ap.pause(); mGlow.style.opacity = 0; };
-        vp.onplay = vp.onplaying = () => { if (modalState.isReadyToPlay) ap.play(); };
-        vp.onwaiting = () => { ap.pause(); bl.style.display = 'block'; mGlow.style.opacity = 0; };
+        // Sincronia Áudio e Vídeo
+        vp.onended = () => { ap.pause(); ap.currentTime = 0; };
         vp.onseeked = () => { ap.currentTime = vp.currentTime; };
+        vp.onpause = () => ap.pause();
+        vp.onplay = vp.onplaying = () => { if (modalState.isReadyToPlay) ap.play(); };
+        vp.onwaiting = () => ap.pause();
         vp.ontimeupdate = () => { if (!ap.paused && Math.abs(vp.currentTime - ap.currentTime) > 0.25) ap.currentTime = vp.currentTime; };
 
-        // Atualiza memória
         $('modalBpmInput').addEventListener('input', e => {
             if (modalState.activeId !== null) { db.find(m => m._tempId == modalState.activeId).bpm = e.target.value; }
         });
 
         function closeModal() {
-            vp.pause(); ap.pause();
-            // Apenas pause e resete o tempo, NÃO apague o SRC. Assim a música não baixa de novo se for clicada logo após.
-            vp.currentTime = 0; ap.currentTime = 0; 
-            
-            clearInterval(modalState.bufferIntervalId); 
-            cancelAnimationFrame(modalState.animationFrameId);
-            
-            mGlow.style.opacity = 0; 
-            bl.style.display = 'none';
+            clearInterval(modalState.bufferIntervalId); cancelAnimationFrame(modalState.animationFrameId); modalState.activeId = null;
+            vp.pause(); ap.pause(); vp.src = ''; ap.src = '';
+            modalBox.style.boxShadow = `0 0 10px rgba(0,0,0,0.5)`; bl.style.display = 'none';
             $('videoModal').classList.remove('active');
         }
         $('videoModal').onclick = e => { if (e.target.id === 'videoModal') closeModal(); };
